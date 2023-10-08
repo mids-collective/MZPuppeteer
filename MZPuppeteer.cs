@@ -4,20 +4,20 @@ using Dalamud;
 using Dalamud.Plugin;
 using Dalamud.Utility.Signatures;
 using Dalamud.Hooking;
+using Dalamud.Game.Text;
+using Dalamud.Game.Text.SeStringHandling;
 
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI;
-using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using FFXIVClientStructs.FFXIV.Client.UI.Shell;
 
-using MZPuppeteer.Structures;
-using MZPuppeteer.Attributes;
-using Dalamud.Game.Text;
-using Dalamud.Game.Text.SeStringHandling;
 using ImGuiNET;
 using System;
 using Dalamud.Utility;
+
+using MZPuppeteer.Structures;
+using MZPuppeteer.Attributes;
 
 namespace MZPuppeteer;
 
