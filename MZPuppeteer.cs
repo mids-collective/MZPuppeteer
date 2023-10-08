@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.InteropServices;
 
 using Dalamud;
@@ -13,7 +14,6 @@ using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using FFXIVClientStructs.FFXIV.Client.UI.Shell;
 
 using ImGuiNET;
-using System;
 using Dalamud.Utility;
 
 using MZPuppeteer.Structures;
