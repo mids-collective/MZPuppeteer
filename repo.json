@@ -3,6 +3,9 @@
     "Author": "Minizbot2012",
     "Name": "MZPuppeteer",
     "Description": "WIP - Do not use",
+    "Tags": [
+      "RP"
+    ],
     "InternalName": "MZPuppeteer",
     "AssemblyVersion": "0.0.1.0",
     "TestingAssemblyVersion": "0.0.1.0",
