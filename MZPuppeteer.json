@@ -1,11 +1,13 @@
 {
-    "Author": "Minizbot2012",
-    "Name": "MZPuppeteer",
-    "Punchline": "RP Plugin",
-    "Description": "RP Plugin",
-    "InternalName": "MZPuppeteer",
-    "ApplicableVersion": "any",
-    "Tags": [
-      "RP"
-    ]
-  }
+  "Author": "Minizbot2012",
+  "Name": "MZPuppeteer",
+  "Description": "RP Plugin",
+  "InternalName": "MZPuppeteer",
+  "AssemblyVersion": "1.0.0.0",
+  "RepoUrl": "https://github.com/mids-collective/MZRadialMenu",
+  "ApplicableVersion": "any",
+  "DalamudApiLevel": 9,
+  "Tags": [
+    "RP"
+  ]
+}
