@@ -2,16 +2,17 @@
   {
     "Author": "Minizbot2012",
     "Name": "MZPuppeteer",
-    "Description": "WIP - Do not use",
+    "Description": "RP Plugin",
+    "Punchline": "RP Plugin",
+    "InternalName": "MZPuppeteer",
+    "ApplicableVersion": "any",
+    "DalamudApiLevel": 9,
     "Tags": [
       "RP"
     ],
-    "InternalName": "MZPuppeteer",
+    "RepoUrl": "https://github.com/mids-collective/MZRadialMenu",
     "AssemblyVersion": "0.0.1.0",
     "TestingAssemblyVersion": "0.0.1.0",
-    "RepoUrl": "https://github.com/mids-collective/MZPuppeteer",
-    "ApplicableVersion": "any",
-    "DalamudApiLevel": 9,
     "IsHide": "False",
     "IsTestingExclusive": "False",
     "DownloadCount": 0,
