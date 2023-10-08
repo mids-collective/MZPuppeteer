@@ -27,13 +27,13 @@ jobs:
       - name: write version into json
         run: |
           $ver = '${{ github.ref_name }}' -replace 'testing_'
-          $path = './bin/Debug/MZRadialMenu.json'
+          $path = './bin/Debug/MZPuppeteer.json'
           $json = Get-Content -Raw $path | ConvertFrom-Json
           $json.AssemblyVersion = $ver
           $content = $json | ConvertTo-Json
           set-content -Path $path -Value $content
       - name: Archive
-        run: Compress-Archive -Path MZRadialMenu/bin/Debug/* -DestinationPath MZRadialMenu.zip
+        run: Compress-Archive -Path MZPuppeteer/bin/Debug/* -DestinationPath MZPuppeteer.zip
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.1
         with:
@@ -46,7 +46,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: MZRadialMenu ${{ github.ref }}
+          release_name: MZPuppeteer ${{ github.ref }}
           draft: false
           prerelease: false
       - name: Upload Release Asset
@@ -56,8 +56,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./MZRadialMenu.zip
-          asset_name: MZRadialMenu.zip
+          asset_path: ./MZPuppeteer.zip
+          asset_name: MZPuppeteer.zip
           asset_content_type: application/zip
 
       - name: Write out repo.json
@@ -67,7 +67,7 @@ jobs:
           $path = './repo.json'
           $json = Get-Content -Raw $path | ConvertFrom-Json
           $json[0].TestingAssemblyVersion = $ver          
-          $json[0].DownloadLinkTesting = $json.DownloadLinkTesting -replace '[^/]+/MZRadialMenu.zip',"$verT/MZRadialMenu.zip"
+          $json[0].DownloadLinkTesting = $json.DownloadLinkTesting -replace '[^/]+/MZPuppeteer.zip',"$verT/MZPuppeteer.zip"
           $content = $json | ConvertTo-Json -AsArray
           set-content -Path $path -Value $content
 

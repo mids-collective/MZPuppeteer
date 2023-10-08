@@ -25,7 +25,7 @@ jobs:
         run: |
           dotnet build --configuration Release --nologo
       - name: Archive
-        run: Compress-Archive -Path bin/Release/* -DestinationPath MZRadialMenu.zip
+        run: Compress-Archive -Path bin/Release/* -DestinationPath MZPuppeteer.zip
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.1
         with:
