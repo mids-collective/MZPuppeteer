@@ -1,0 +1,10 @@
+{
+    "Author": "Minizbot2012",
+    "Name": "MZPuppeteer",
+    "Punchline": "A short one-liner that shows up in /xlplugins.",
+    "Description": "A description that shows up in /xlplugins. List any major slash-command(s).",
+    "InternalName": "Puppeteer",
+    "ApplicableVersion": "any",
+    "Tags": [
+    ]
+  }
