@@ -48,7 +48,7 @@ jobs:
         with:
           files: MZPuppeteer.zip
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: MZPuppeteer ${{ github.ref }}
+          name: Testing MZPuppeteer ${{ github.ref }}
       - name: Write out repo.json
         run: |
           $verT = '${{ github.ref_name }}'
