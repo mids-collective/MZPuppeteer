@@ -7,6 +7,7 @@ using Dalamud.Utility.Signatures;
 using Dalamud.Hooking;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
+using Dalamud.Utility;
 
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI;
@@ -14,7 +15,6 @@ using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using FFXIVClientStructs.FFXIV.Client.UI.Shell;
 
 using ImGuiNET;
-using Dalamud.Utility;
 
 using MZPuppeteer.Structures;
 using MZPuppeteer.Attributes;
