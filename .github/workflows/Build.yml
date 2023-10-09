@@ -10,11 +10,11 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           submodules: true
       - name: Setup .NET
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '7.x.x'
       - name: Download Dalamud
@@ -27,7 +27,7 @@ jobs:
       - name: Archive
         run: Compress-Archive -Path bin/Release/* -DestinationPath MZPuppeteer.zip
       - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v2.2.1
+        uses: actions/upload-artifact@v3
         with:
           path: |
             bin/Release/*

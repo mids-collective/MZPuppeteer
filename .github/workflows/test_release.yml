@@ -5,15 +5,18 @@ on:
     tags:
       - testing_*
 
+env:
+  PROJECT_NAME: MZPuppeteer
+
 jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           submodules: true
       - name: Setup .NET
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '7.x.x'
       - name: Download Dalamud
@@ -27,39 +30,25 @@ jobs:
       - name: write version into json
         run: |
           $ver = '${{ github.ref_name }}' -replace 'testing_'
-          $path = './bin/Debug/MZPuppeteer.json'
+          $path = "./bin/Debug/MZPuppeteer.json"
           $json = Get-Content -Raw $path | ConvertFrom-Json
           $json.AssemblyVersion = $ver
           $content = $json | ConvertTo-Json
           set-content -Path $path -Value $content
       - name: Archive
-        run: Compress-Archive -Path MZPuppeteer/bin/Debug/* -DestinationPath MZPuppeteer.zip
+        run: Compress-Archive -Path bin/Debug/* -DestinationPath MZPuppeteer.zip
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.1
         with:
           path: |
             ./bin/Debug/*
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create & Upload Release
+        id: upload-release
+        uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: MZPuppeteer ${{ github.ref }}
-          draft: false
-          prerelease: false
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./MZPuppeteer.zip
-          asset_name: MZPuppeteer.zip
-          asset_content_type: application/zip
-
+          files: MZPuppeteer.zip
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: MZPuppeteer ${{ github.ref }}
       - name: Write out repo.json
         run: |
           $verT = '${{ github.ref_name }}'
@@ -67,7 +56,7 @@ jobs:
           $path = './repo.json'
           $json = Get-Content -Raw $path | ConvertFrom-Json
           $json[0].TestingAssemblyVersion = $ver          
-          $json[0].DownloadLinkTesting = $json.DownloadLinkTesting -replace '[^/]+/MZPuppeteer.zip',"$verT/MZPuppeteer.zip"
+          $json[0].DownloadLinkTesting = ${{ fromJSON(steps.upload-release.outputs.assets)[0].browser_download_url }}
           $content = $json | ConvertTo-Json -AsArray
           set-content -Path $path -Value $content
 
