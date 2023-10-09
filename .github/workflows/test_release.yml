@@ -5,8 +5,9 @@ on:
     tags:
       - testing_*
 
-env:
-  PROJECT_NAME: MZPuppeteer
+permissions:
+  contents: write
+
 
 jobs:
   build:
@@ -58,10 +59,9 @@ jobs:
           $path = './repo.json'
           $json = Get-Content -Raw $path | ConvertFrom-Json
           $json[0].TestingAssemblyVersion = $ver          
-          $json[0].DownloadLinkTesting = ${{ fromJSON(steps.upload-release.outputs.assets)[0].browser_download_url }}
+          $json[0].DownloadLinkTesting = $url
           $content = $json | ConvertTo-Json -AsArray
           set-content -Path $path -Value $content
-
       - name: Commit repo.json
         run: |
           git config --global user.name "Actions User"
