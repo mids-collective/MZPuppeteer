@@ -50,6 +50,8 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           name: Testing MZPuppeteer ${{ github.ref }}
       - name: Write out repo.json
+        env:
+          url: ${{ fromJSON(steps.upload-release.outputs.assets)[0].browser_download_url }}
         run: |
           $verT = '${{ github.ref_name }}'
           $ver = $verT -replace 'testing_'
