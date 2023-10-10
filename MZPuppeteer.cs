@@ -310,8 +310,8 @@ public unsafe class MZPuppeter : IDalamudPlugin
         DalamudApi.PluginInterface.UiBuilder.Draw -= Draw;
         DalamudApi.ClientState.Login -= handleLogin;
         DalamudApi.Chat.ChatMessage -= Puppeter;
-        commandManager.Dispose();
-        ExecuteMacroHook!.Dispose();
+        commandManager?.Dispose();
+        ExecuteMacroHook?.Dispose();
     }
 
     public static void ExecuteMacroDetour(RaptureShellModule* raptureShellModule, nint macro)
