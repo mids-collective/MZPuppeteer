@@ -62,7 +62,7 @@ public unsafe class MZPuppeter : IDalamudPlugin
     private bool config_open = false;
     private string CharacterToAdd = String.Empty;
     private string Command = String.Empty;
-    private void ConfigRender()
+    private void DrawConfig()
     {
         if (config_open)
         {
@@ -171,10 +171,6 @@ public unsafe class MZPuppeter : IDalamudPlugin
             }
         }
     }
-    private void Draw()
-    {
-        ConfigRender();
-    }
     public void Puppeter(XivChatType chattype, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled)
     {
         if (Configuration.AllowedChats.Contains(chattype))
@@ -219,18 +215,14 @@ public unsafe class MZPuppeter : IDalamudPlugin
         commandManager = new PluginCommandManager(this);
         Configuration = (Puppeter?)DalamudApi.PluginInterface.GetPluginConfig() ?? new();
         DalamudApi.PluginInterface.SavePluginConfig(Configuration);
-        DalamudApi.PluginInterface.UiBuilder.Draw += Draw;
+        DalamudApi.PluginInterface.UiBuilder.Draw += DrawConfig;
         DalamudApi.PluginInterface.UiBuilder.OpenConfigUi += ToggleConfig;
         if (DalamudApi.ClientState.IsLoggedIn)
         {
             InitCommands();
         }
-        DalamudApi.ClientState.Login += handleLogin;
+        DalamudApi.ClientState.Login += InitCommands;
         DalamudApi.Chat.ChatMessage += Puppeter;
-    }
-    private void handleLogin()
-    {
-        InitCommands();
     }
     private void ToggleConfig()
     {
@@ -307,8 +299,8 @@ public unsafe class MZPuppeter : IDalamudPlugin
         NumCopiedMacroLines = 15;
         NumExecutedMacroLines = 15;
         DalamudApi.PluginInterface.UiBuilder.OpenConfigUi -= ToggleConfig;
-        DalamudApi.PluginInterface.UiBuilder.Draw -= Draw;
-        DalamudApi.ClientState.Login -= handleLogin;
+        DalamudApi.PluginInterface.UiBuilder.Draw -= DrawConfig;
+        DalamudApi.ClientState.Login -= InitCommands;
         DalamudApi.Chat.ChatMessage -= Puppeter;
         commandManager?.Dispose();
         ExecuteMacroHook?.Dispose();
