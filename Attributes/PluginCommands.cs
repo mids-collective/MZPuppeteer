@@ -1,6 +1,7 @@
 using System.Reflection;
 using Dalamud.Plugin;
 using Dalamud.Game.Command;
+
 namespace MZPuppeteer.Attributes;
 
 #region PluginCommandManager

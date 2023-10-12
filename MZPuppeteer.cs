@@ -7,7 +7,6 @@ namespace MZPuppeteer;
 public unsafe class MZPuppeter : IDalamudPlugin
 {
     public static MZPuppeter? Instance;
-    private PluginCommandManager commandManager;
     private List<IDisposable> ServiceList = new();
     public MZPuppeter(DalamudPluginInterface dpi)
     {
@@ -19,8 +18,7 @@ public unsafe class MZPuppeter : IDalamudPlugin
         ServiceList.Add(CmdService.Instance);
         ServiceList.Add(ConfigService.Instance);
         ServiceList.Add(PuppetService.Instance);
-        commandManager = new PluginCommandManager(this);
-        ServiceList.Add(commandManager);
+        ServiceList.Add(new PluginCommandManager(this));
     }
     [Command("/puppeteer")]
     [HelpMessage("Show or hide plugin configuation")]
