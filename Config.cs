@@ -7,7 +7,7 @@ using Newtonsoft.Json.Converters;
 
 namespace MZPuppeteer;
 
-public class Puppeter : IPluginConfiguration
+public class ConfigFile : IPluginConfiguration
 {
     public HashSet<String> AuthorizedUsers = new();
     public String TriggerWord = "Trigger";
