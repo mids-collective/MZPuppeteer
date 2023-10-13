@@ -15,7 +15,7 @@ public sealed class ConfigService : IService<ConfigService>
         Configuration = (ConfigFile?)DalamudApi.PluginInterface.GetPluginConfig() ?? new();
         DalamudApi.PluginInterface.UiBuilder.Draw += Draw;
         DalamudApi.PluginInterface.UiBuilder.OpenConfigUi += ToggleConfig;
-        CmdMgrService.Instance.AddCommand("/puppeteer", ToggleConfig);
+        CmdMgrService.Instance.AddCommand("/puppeteer", ToggleConfig, "Toggle Configuration Window");
     }
     private void ToggleConfig(string cmd, string args)
     {
