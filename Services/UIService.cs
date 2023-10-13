@@ -4,8 +4,8 @@ using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using FFXIVClientStructs.FFXIV.Client.UI.Shell;
 
-namespace MZPuppeteer.Services;
-public unsafe sealed class UIService : IDisposable
+namespace Plugin.Services;
+public unsafe sealed class UIService : IService<UIService>
 {
     public static UIService Instance => Service<UIService>.Instance;
     public UIModule* uiModule;

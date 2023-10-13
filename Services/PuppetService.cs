@@ -1,8 +1,8 @@
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 
-namespace MZPuppeteer.Services;
-public sealed class PuppetService : IDisposable
+namespace Plugin.Services;
+public sealed class PuppetService : IService<PuppetService>
 {
     public static PuppetService Instance => Service<PuppetService>.Instance;
     public ConfigFile config => Service<ConfigService>.Instance.Configuration!;

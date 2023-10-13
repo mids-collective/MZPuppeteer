@@ -3,7 +3,7 @@ using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 
-namespace MZPuppeteer;
+namespace Plugin;
 
 public class DalamudApi
 {
@@ -13,7 +13,6 @@ public class DalamudApi
     [PluginService] public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
     [PluginService] public static IGameInteropProvider GameInteropProvider { get; private set; } = null!;
     [PluginService] public static IPluginLog PluginLog { get; private set; } = null!;
-    [PluginService] public static IClientState ClientState { get; private set; } = null!;
     [PluginService] public static ICommandManager Commands { get; private set; } = null!;
     [PluginService] public static IChatGui Chat { get; private set; } = null!;
     [PluginService] public static ISigScanner SigScanner { get; private set; } = null!;

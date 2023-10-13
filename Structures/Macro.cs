@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace MZPuppeteer.Structures;
+namespace Plugin.Structures;
 
 //Basically taken from QoLBar
 [StructLayout(LayoutKind.Sequential, Size = 0x688)]

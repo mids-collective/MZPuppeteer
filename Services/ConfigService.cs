@@ -3,18 +3,24 @@ using ImGuiNET;
 using Dalamud.Utility;
 using Dalamud.Game.Text;
 
-namespace MZPuppeteer.Services;
+namespace Plugin.Services;
 
-public sealed class ConfigService : IDisposable
+public sealed class ConfigService : IService<ConfigService>
 {
     public static ConfigService Instance => Service<ConfigService>.Instance;
-    public ConfigFile? Configuration;
+    public ConfigFile Configuration;
     private bool ConfigOpen = false;
-    private ConfigService() { 
+    private ConfigService()
+    {
         Configuration = (ConfigFile?)DalamudApi.PluginInterface.GetPluginConfig() ?? new();
         DalamudApi.PluginInterface.UiBuilder.Draw += Draw;
         DalamudApi.PluginInterface.UiBuilder.OpenConfigUi += ToggleConfig;
-     }
+        CmdMgrService.Instance.AddCommand("/puppeteer", ToggleConfig);
+    }
+    private void ToggleConfig(string cmd, string args)
+    {
+        ToggleConfig();
+    }
     private string CharacterToAdd = string.Empty;
     private string Command = string.Empty;
     private void Draw()

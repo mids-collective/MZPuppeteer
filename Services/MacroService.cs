@@ -1,11 +1,11 @@
 using FFXIVClientStructs.FFXIV.Client.UI.Shell;
 using Dalamud.Hooking;
 using Dalamud;
-using MZPuppeteer.Structures;
+using Plugin.Structures;
 
-namespace MZPuppeteer.Services;
+namespace Plugin.Services;
 
-public unsafe sealed class MacroService : IDisposable
+public unsafe sealed class MacroService : IService<MacroService>
 {
     public static MacroService Instance => Service<MacroService>.Instance;
     private const string macroSig = "E8 ?? ?? ?? ?? E9 ?? ?? ?? ?? 48 8D 4D 28";
