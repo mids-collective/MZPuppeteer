@@ -11,8 +11,8 @@
       "RP"
     ],
     "RepoUrl": "https://github.com/mids-collective/MZRadialMenu",
-    "AssemblyVersion": "0.0.6.0",
-    "TestingAssemblyVersion": "0.0.6.0",
+    "AssemblyVersion": "0.0.6.1",
+    "TestingAssemblyVersion": "0.0.6.1",
     "IsHide": "False",
     "IsTestingExclusive": "False",
     "DownloadCount": 0,
@@ -20,9 +20,9 @@
     "LoadPriority": 0,
     "LoadRequiredState": 0,
     "LoadSync": false,
-    "DownloadLinkInstall": "https://github.com/mids-collective/MZPuppeteer/releases/download/0.0.6.0/MZPuppeteer.zip",
-    "DownloadLinkTesting": "https://github.com/mids-collective/MZPuppeteer/releases/download/0.0.6.0/MZPuppeteer.zip",
-    "DownloadLinkUpdate": "https://github.com/mids-collective/MZPuppeteer/releases/download/0.0.6.0/MZPuppeteer.zip",
+    "DownloadLinkInstall": "https://github.com/mids-collective/MZPuppeteer/releases/download/0.0.6.1/MZPuppeteer.zip",
+    "DownloadLinkTesting": "https://github.com/mids-collective/MZPuppeteer/releases/download/0.0.6.1/MZPuppeteer.zip",
+    "DownloadLinkUpdate": "https://github.com/mids-collective/MZPuppeteer/releases/download/0.0.6.1/MZPuppeteer.zip",
     "IconUrl": ""
   }
 ]
