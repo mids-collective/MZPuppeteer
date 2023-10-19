@@ -159,7 +159,7 @@ public sealed class ConfigService : IService<ConfigService>
 
     public void ToggleConfig()
     {
-        if (!Configuration!.ConfigLocked)
+        if (!Configuration!.ConfigLocked && Configuration.AllowConfigLocking)
         {
             ConfigOpen = !ConfigOpen;
         }
@@ -171,7 +171,7 @@ public sealed class ConfigService : IService<ConfigService>
                 Message = "Configuration is locked, get your Dom to unlock.",
                 Type = DalamudApi.PluginInterface.GeneralChatType,
                 SenderId = 0,
-                Name = String.Empty,
+                Name = string.Empty,
             });
         }
     }
