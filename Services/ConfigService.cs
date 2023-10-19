@@ -108,6 +108,9 @@ public sealed class ConfigService : IService<ConfigService>
                 ImGui.SameLine();
                 foreach (var en in Enum.GetNames<UserPermissions>())
                 {
+                    if(en.Equals("None")) {
+                        continue;
+                    }
                     var Perm = Enum.Parse<UserPermissions>(en);
                     var HasPerm = chr.HasPermission(Perm);
                     var HPC = HasPerm;
@@ -227,7 +230,11 @@ public sealed class ConfigService : IService<ConfigService>
                 }
                 ImGui.End();
             }
-            if (changed || (Configuration.ConfigLocked && !Configuration.AllowConfigLocking))
+            if(Configuration.ConfigLocked && !Configuration.AllowConfigLocking && !Configuration.AuthorizedUsers2.Any(x=>x.HasPermission(UserPermissions.AllowConfigLocking))) {
+                Configuration.ConfigLocked = false;
+                changed = true;
+            }
+            if (changed)
             {
                 DalamudApi.PluginInterface.SavePluginConfig(Configuration);
             }
