@@ -2,6 +2,7 @@ using ImGuiNET;
 
 using Dalamud.Utility;
 using Dalamud.Game.Text;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 
 namespace Plugin.Services;
 
@@ -23,14 +24,142 @@ public sealed class ConfigService : IService<ConfigService>
     }
     private string CharacterToAdd = string.Empty;
     private string Command = string.Empty;
-    public void SetConfigLock(bool configLocked) {
-        if(Configuration.AllowConfigLocking) {
+    public void SetConfigLock(bool configLocked)
+    {
+        if (Configuration.AllowConfigLocking)
+        {
             Configuration.ConfigLocked = configLocked;
-            DalamudApi.PluginInterface.SavePluginConfig(Configuration);
             CloseConfig();
-        } else {
+        }
+        else
+        {
             Configuration.ConfigLocked = false;
         }
+        DalamudApi.PluginInterface.SavePluginConfig(Configuration);
+    }
+
+    private bool DrawBasicTab()
+    {
+        var changed = false;
+
+        if (ImGui.BeginTabItem("Basic"))
+        {
+            ImGui.InputText("Trigger Word", ref Configuration!.TriggerWord, 0x14);
+            ImGui.SameLine();
+            if (ImGui.Button("Save"))
+            {
+                changed = true;
+            }
+            ImGui.EndTabItem();
+        }
+        return changed;
+    }
+
+    public bool DrawCharacterTab()
+    {
+        var changed = false;
+        if (ImGui.BeginTabItem("Allowed Characters"))
+        {
+            ImGui.InputText("Character: ", ref CharacterToAdd, 20);
+            ImGui.SameLine();
+            if (ImGui.Button("+"))
+            {
+                if (!CharacterToAdd.IsNullOrWhitespace())
+                {
+                    Configuration!.AuthorizedUsers.Add(CharacterToAdd);
+                    CharacterToAdd = string.Empty;
+                    changed = true;
+                }
+            }
+            ImGui.SameLine();
+            if (ImGui.Button("Add Targeted Character"))
+            {
+                if (DalamudApi.TargetManager.Target != null)
+                {
+                    Configuration!.AuthorizedUsers.Add(DalamudApi.TargetManager.Target.Name.ToString());
+                }
+            }
+            ImGui.Text("Currently Allowed Characters");
+            foreach (var chr in Configuration!.AuthorizedUsers)
+            {
+                if (ImGui.Button($"X##{chr}"))
+                {
+                    Configuration.AuthorizedUsers.Remove(chr);
+                    changed = true;
+                }
+                ImGui.SameLine();
+                ImGui.Text($"{chr}");
+            }
+            ImGui.EndTabItem();
+        }
+        return changed;
+    }
+
+    private bool DrawBlocklistTab()
+    {
+        var changed = false;
+        if (ImGui.BeginTabItem("Command Blocklist"))
+        {
+            ImGui.InputText("Command to Block: ", ref Command, 20);
+            ImGui.SameLine();
+            if (ImGui.Button("+"))
+            {
+                if (!Command.IsNullOrWhitespace())
+                {
+                    Configuration!.CommandBlocklist.Add(Command);
+                    Command = string.Empty;
+                    changed = true;
+                }
+            }
+            ImGui.Text("Currently Blocked Commands");
+            ImGui.Checkbox("Allow Config Locking", ref Configuration.AllowConfigLocking);
+            if (ImGui.IsItemHovered())
+            {
+                ImGui.SetTooltip("WARNING: Enabling this can cause you to lose control completely!!");
+            }
+            foreach (var cmd in Configuration!.CommandBlocklist)
+            {
+                if (ImGui.Button($"X##{cmd}"))
+                {
+                    Configuration.CommandBlocklist.Remove(cmd);
+                    changed = true;
+                }
+                ImGui.SameLine();
+                ImGui.Text($"{cmd}");
+            }
+            ImGui.EndTabItem();
+        }
+        return changed;
+    }
+
+    public bool DrawChatChannels()
+    {
+        bool changed = false;
+        if (ImGui.BeginTabItem("Chat Channels"))
+        {
+            ImGui.Text("Allowed Chat Channels");
+            foreach (var chan in Enum.GetValues<XivChatType>())
+            {
+                var cont = Configuration!.AllowedChats.Contains(chan);
+                var old = cont;
+                ImGui.Checkbox($"{chan}", ref cont);
+                if (old != cont)
+                {
+                    if (!Configuration.AllowedChats.Contains(chan))
+                    {
+                        Configuration.AllowedChats.Add(chan);
+                        changed = true;
+                    }
+                    else
+                    {
+                        Configuration.AllowedChats.Remove(chan);
+                        changed = true;
+                    }
+                }
+            }
+            ImGui.EndTabItem();
+        }
+        return changed;
     }
     private void Draw()
     {
@@ -43,105 +172,9 @@ public sealed class ConfigService : IService<ConfigService>
                 size.Y -= 30;
                 ImGui.BeginChild("Puppeteer", size);
                 ImGui.BeginTabBar("Main");
-                if (ImGui.BeginTabItem("Basic"))
-                {
-                    ImGui.InputText("Trigger Word", ref Configuration!.TriggerWord, 0x14);
-                    ImGui.SameLine();
-                    if (ImGui.Button("Save"))
-                    {
-                        changed = true;
-                    }
-                    ImGui.EndTabItem();
-                }
-                if (ImGui.BeginTabItem("Allowed Characters"))
-                {
-                    ImGui.InputText("Character: ", ref CharacterToAdd, 20);
-                    ImGui.SameLine();
-                    if (ImGui.Button("+"))
-                    {
-                        if (!CharacterToAdd.IsNullOrWhitespace())
-                        {
-                            Configuration!.AuthorizedUsers.Add(CharacterToAdd);
-                            CharacterToAdd = string.Empty;
-                            changed = true;
-                        }
-                    }
-                    ImGui.SameLine();
-                    if (ImGui.Button("Add Targeted Character"))
-                    {
-                        if (DalamudApi.TargetManager.Target != null)
-                        {
-                            Configuration!.AuthorizedUsers.Add(DalamudApi.TargetManager.Target.Name.ToString());
-                        }
-                    }
-                    ImGui.Text("Currently Allowed Characters");
-                    foreach (var chr in Configuration!.AuthorizedUsers)
-                    {
-                        if (ImGui.Button($"X##{chr}"))
-                        {
-                            Configuration.AuthorizedUsers.Remove(chr);
-                            changed = true;
-                        }
-                        ImGui.SameLine();
-                        ImGui.Text($"{chr}");
-                    }
-                    ImGui.EndTabItem();
-                }
-                if (ImGui.BeginTabItem("Command Blocklist"))
-                {
-                    ImGui.InputText("Command to Block: ", ref Command, 20);
-                    ImGui.SameLine();
-                    if (ImGui.Button("+"))
-                    {
-                        if (!Command.IsNullOrWhitespace())
-                        {
-                            Configuration!.CommandBlocklist.Add(Command);
-                            Command = string.Empty;
-                            changed = true;
-                        }
-                    }
-                    ImGui.Text("Currently Blocked Commands");
-                    ImGui.Checkbox("Allow Config Locking", ref Configuration.AllowConfigLocking);
-                    if (ImGui.IsItemHovered())
-                    {
-                        ImGui.SetTooltip("WARNING: Enabling this can cause you to lose control completely!!");
-                    }
-                    foreach (var cmd in Configuration!.CommandBlocklist)
-                    {
-                        if (ImGui.Button($"X##{cmd}"))
-                        {
-                            Configuration.CommandBlocklist.Remove(cmd);
-                            changed = true;
-                        }
-                        ImGui.SameLine();
-                        ImGui.Text($"{cmd}");
-                    }
-                    ImGui.EndTabItem();
-                }
-                if (ImGui.BeginTabItem("Chat Channels"))
-                {
-                    ImGui.Text("Allowed Chat Channels");
-                    foreach (var chan in Enum.GetValues<XivChatType>())
-                    {
-                        var cont = Configuration!.AllowedChats.Contains(chan);
-                        var old = cont;
-                        ImGui.Checkbox($"{chan}", ref cont);
-                        if (old != cont)
-                        {
-                            if (!Configuration.AllowedChats.Contains(chan))
-                            {
-                                Configuration.AllowedChats.Add(chan);
-                                changed = true;
-                            }
-                            else
-                            {
-                                Configuration.AllowedChats.Remove(chan);
-                                changed = true;
-                            }
-                        }
-                    }
-                    ImGui.EndTabItem();
-                }
+                changed |= DrawBasicTab();
+                changed |= DrawCharacterTab();
+                changed |= DrawChatChannels();
                 ImGui.EndTabBar();
                 ImGui.EndChild();
                 ImGui.Separator();
@@ -154,7 +187,7 @@ public sealed class ConfigService : IService<ConfigService>
                 }
                 ImGui.End();
             }
-            if (changed)
+            if (changed || (Configuration.ConfigLocked && !Configuration.AllowConfigLocking))
             {
                 DalamudApi.PluginInterface.SavePluginConfig(Configuration);
             }
