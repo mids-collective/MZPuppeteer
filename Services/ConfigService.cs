@@ -15,6 +15,7 @@ public sealed class ConfigService : IService<ConfigService>
         {
             Configuration.AuthorizedUsers2.Add(new User(user));
         }
+        Configuration.AuthorizedUsers.Clear();
         Configuration.Version = 2;
     }
     private ConfigService()
@@ -104,6 +105,11 @@ public sealed class ConfigService : IService<ConfigService>
                 }
                 ImGui.SameLine();
                 ImGui.Text($"{chr}");
+                ImGui.Text("Permissions");
+                if (ImGui.IsItemHovered())
+                {
+                    ImGui.SetTooltip("Fine-Grained character permissions, hover them to find out what they do!");
+                }
                 foreach (var en in Enum.GetNames<UserPermissions>())
                 {
                     if (en.Equals("None"))
