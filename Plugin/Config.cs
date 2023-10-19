@@ -31,7 +31,7 @@ public class User : IEqualityComparer<User>
         this.Perms = UserPermissions.None;
     }
     public bool HasPermission(UserPermissions permmission) => Perms.HasFlag(permmission);
-    public void TogglePermission(UserPermissions perm) => Perms &= perm;
+    public void TogglePermission(UserPermissions perm) => Perms ^= perm;
     public bool Equals(User? x, User? y)
     {
         return x != null && y != null && (x.Name == y.Name);
