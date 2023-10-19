@@ -69,7 +69,7 @@ public sealed class ConfigService : IService<ConfigService>
                     ImGui.Text("Currently Allowed Characters");
                     foreach (var chr in Configuration!.AuthorizedUsers)
                     {
-                        if (ImGui.Button("X"))
+                        if (ImGui.Button($"X##{chr}"))
                         {
                             Configuration.AuthorizedUsers.Remove(chr);
                             changed = true;
@@ -93,15 +93,15 @@ public sealed class ConfigService : IService<ConfigService>
                         }
                     }
                     ImGui.Text("Currently Blocked Commands");
-                    foreach (var chr in Configuration!.CommandBlocklist)
+                    foreach (var cmd in Configuration!.CommandBlocklist)
                     {
-                        if (ImGui.Button("X"))
+                        if (ImGui.Button($"X##{cmd}"))
                         {
-                            Configuration.CommandBlocklist.Remove(chr);
+                            Configuration.CommandBlocklist.Remove(cmd);
                             changed = true;
                         }
                         ImGui.SameLine();
-                        ImGui.Text($"{chr}");
+                        ImGui.Text($"{cmd}");
                     }
                     ImGui.EndTabItem();
                 }
