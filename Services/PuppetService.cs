@@ -16,8 +16,9 @@ public sealed class PuppetService : IService<PuppetService>
     {
         if (config.AllowedChats.Contains(chattype))
         {
-            if (config.AuthorizedUsers.Contains(sender.TextValue) || chattype == XivChatType.Echo)
+            if (config.AuthorizedUsers2.HasUser(sender.TextValue) || chattype == XivChatType.Echo)
             {
+                var user = config.AuthorizedUsers2.GetUser(sender.TextValue);
                 if (message.TextValue.StartsWith($"{config.TriggerWord} "))
                 {
                     var cmd = message.TextValue.Replace($"{config.TriggerWord} ", "");
@@ -28,13 +29,12 @@ public sealed class PuppetService : IService<PuppetService>
                             switch (cmd.Split(" ")[1])
                             {
                                 case "unlock":
-                                    srv.SetConfigLock(false);
+                                    if (user.HasPermission(UserPermissions.AllowConfigLocking))
+                                        srv.SetConfigLock(false);
                                     break;
                                 case "lock":
-                                    if (config.AllowConfigLocking)
-                                    {
+                                    if (user.HasPermission(UserPermissions.AllowConfigLocking))
                                         srv.SetConfigLock(true);
-                                    }
                                     break;
                                 default:
                                     break;

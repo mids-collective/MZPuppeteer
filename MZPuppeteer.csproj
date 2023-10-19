@@ -23,4 +23,8 @@
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
-</Project>
+
+  <ItemGroup>
+    <EmbeddedResource Include="locale.json"/>
+    </ItemGroup>
+  </Project>

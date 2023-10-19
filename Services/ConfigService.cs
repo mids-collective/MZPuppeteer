@@ -2,8 +2,6 @@ using ImGuiNET;
 
 using Dalamud.Utility;
 using Dalamud.Game.Text;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
-
 namespace Plugin.Services;
 
 public sealed class ConfigService : IService<ConfigService>
@@ -11,9 +9,21 @@ public sealed class ConfigService : IService<ConfigService>
     public static ConfigService Instance => Service<ConfigService>.Instance;
     public ConfigFile Configuration;
     private bool ConfigOpen = false;
+    private void ConvertTo2()
+    {
+        foreach (var user in Configuration.AuthorizedUsers)
+        {
+            Configuration.AuthorizedUsers2.Add(new User(user));
+        }
+        Configuration.Version = 2;
+    }
     private ConfigService()
     {
         Configuration = (ConfigFile?)DalamudApi.PluginInterface.GetPluginConfig() ?? new();
+        if (Configuration.Version < 2)
+        {
+            ConvertTo2();
+        }
         DalamudApi.PluginInterface.UiBuilder.Draw += Draw;
         DalamudApi.PluginInterface.UiBuilder.OpenConfigUi += ToggleConfig;
         CmdMgrService.Instance.AddCommand("/puppeteer", ToggleConfig, "Toggle Configuration Window");
@@ -42,7 +52,7 @@ public sealed class ConfigService : IService<ConfigService>
     {
         var changed = false;
 
-        if (ImGui.BeginTabItem("Basic"))
+        if (ImGui.BeginTabItem("Basic Configuration"))
         {
             ImGui.InputText("Trigger Word", ref Configuration!.TriggerWord, 0x14);
             ImGui.SameLine();
@@ -66,9 +76,11 @@ public sealed class ConfigService : IService<ConfigService>
             {
                 if (!CharacterToAdd.IsNullOrWhitespace())
                 {
-                    Configuration!.AuthorizedUsers.Add(CharacterToAdd);
-                    CharacterToAdd = string.Empty;
-                    changed = true;
+                    if (Configuration!.AuthorizedUsers2.Add(new User(CharacterToAdd)))
+                    {
+                        CharacterToAdd = string.Empty;
+                        changed = true;
+                    }
                 }
             }
             ImGui.SameLine();
@@ -76,19 +88,41 @@ public sealed class ConfigService : IService<ConfigService>
             {
                 if (DalamudApi.TargetManager.Target != null)
                 {
-                    Configuration!.AuthorizedUsers.Add(DalamudApi.TargetManager.Target.Name.ToString());
+                    if (Configuration!.AuthorizedUsers2.Add(new User(DalamudApi.TargetManager.Target.Name.ToString())))
+                    {
+                        changed = true;
+                    }
                 }
             }
             ImGui.Text("Currently Allowed Characters");
-            foreach (var chr in Configuration!.AuthorizedUsers)
+            foreach (var chr in Configuration!.AuthorizedUsers2)
             {
                 if (ImGui.Button($"X##{chr}"))
                 {
-                    Configuration.AuthorizedUsers.Remove(chr);
+                    Configuration.AuthorizedUsers2.Remove(chr);
                     changed = true;
                 }
                 ImGui.SameLine();
                 ImGui.Text($"{chr}");
+                ImGui.Text("Permissions");
+                ImGui.SameLine();
+                foreach (var en in Enum.GetNames<UserPermissions>())
+                {
+                    var Perm = Enum.Parse<UserPermissions>(en);
+                    var HasPerm = chr.HasPermission(Perm);
+                    var HPC = HasPerm;
+                    ImGui.Checkbox($"##{en}", ref HasPerm);
+                    if (HPC != HasPerm)
+                    {
+                        chr.TogglePermission(Perm);
+                        changed = true;
+                    }
+                    if (ImGui.IsItemHovered())
+                    {
+                        ImGui.SetTooltip($"{Localization.Localize(en)}");
+                    }
+                }
+                ImGui.Separator();
             }
             ImGui.EndTabItem();
         }
@@ -202,7 +236,7 @@ public sealed class ConfigService : IService<ConfigService>
 
     public void ToggleConfig()
     {
-        if (!(Configuration!.ConfigLocked && Configuration.AllowConfigLocking))
+        if (!(Configuration!.ConfigLocked && Configuration.AllowConfigLocking) || !Configuration.AuthorizedUsers2.Any(x => x.HasPermission(UserPermissions.AllowConfigLocking)))
         {
             ConfigOpen = !ConfigOpen;
         }
