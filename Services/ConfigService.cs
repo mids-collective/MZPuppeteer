@@ -29,10 +29,10 @@ public sealed class ConfigService : IService<ConfigService>
         if (ConfigOpen)
         {
             var changed = false;
-            var size = ImGui.GetContentRegionAvail();
-            size.Y -= 30;
             if (ImGui.Begin("MZ Puppeteer Plugin", ref ConfigOpen, ImGuiWindowFlags.None))
-            {   
+            {
+                var size = ImGui.GetContentRegionAvail();
+                size.Y -= 30;
                 ImGui.BeginChild("Puppeteer", size);
                 ImGui.BeginTabBar("Main");
                 if (ImGui.BeginTabItem("Basic"))
