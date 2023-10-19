@@ -21,26 +21,26 @@ public sealed class PuppetService : IService<PuppetService>
                 if (message.TextValue.StartsWith($"{config.TriggerWord} "))
                 {
                     var cmd = message.TextValue.Replace($"{config.TriggerWord} ", "");
-                    if (cmd.StartsWith("user"))
+                    if (!config.CommandBlocklist.Contains(cmd.Split(" ")[0]) || config.CommandBlocklist.Contains(cmd))
                     {
-                        switch (cmd.Split(" ")[1])
+                        if (cmd.StartsWith("user"))
                         {
-                            case "unlock":
-                                srv.SetConfigLock(false);
-                                break;
-                            case "lock":
-                                if (config.AllowConfigLocking)
-                                {
-                                    srv.SetConfigLock(true);
-                                }
-                                break;
-                            default:
-                                break;
+                            switch (cmd.Split(" ")[1])
+                            {
+                                case "unlock":
+                                    srv.SetConfigLock(false);
+                                    break;
+                                case "lock":
+                                    if (config.AllowConfigLocking)
+                                    {
+                                        srv.SetConfigLock(true);
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
-                    }
-                    else
-                    {
-                        if (!config.CommandBlocklist.Contains(cmd.Split(" ")[0]))
+                        else
                         {
                             CmdService.Instance.ExecuteCommand($"/{cmd}");
                         }
