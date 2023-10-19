@@ -104,7 +104,6 @@ public sealed class ConfigService : IService<ConfigService>
                 }
                 ImGui.SameLine();
                 ImGui.Text($"{chr}");
-                ImGui.Text("Permissions");
                 foreach (var en in Enum.GetNames<UserPermissions>())
                 {
                     if (en.Equals("None"))
@@ -115,7 +114,7 @@ public sealed class ConfigService : IService<ConfigService>
                     var Perm = Enum.Parse<UserPermissions>(en);
                     var HasPerm = chr.HasPermission(Perm);
                     var HPC = HasPerm;
-                    ImGui.Checkbox($"##{en}", ref HasPerm);
+                    ImGui.Checkbox($"##{chr}{en}", ref HasPerm);
                     if (HPC != HasPerm)
                     {
                         chr.TogglePermission(Perm);
