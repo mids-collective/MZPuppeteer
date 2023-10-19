@@ -2,6 +2,7 @@ using ImGuiNET;
 
 using Dalamud.Utility;
 using Dalamud.Game.Text;
+using FFXIVClientStructs.FFXIV.Client.UI;
 
 namespace Plugin.Services;
 
@@ -30,9 +31,9 @@ public sealed class ConfigService : IService<ConfigService>
             var changed = false;
             var size = ImGui.GetContentRegionAvail();
             size.Y -= 30;
-            ImGui.BeginChild("Puppeteer", size);
             if (ImGui.Begin("MZ Puppeteer Plugin", ref ConfigOpen, ImGuiWindowFlags.None))
-            {
+            {   
+                ImGui.BeginChild("Puppeteer", size);
                 ImGui.BeginTabBar("Main");
                 if (ImGui.BeginTabItem("Basic"))
                 {
