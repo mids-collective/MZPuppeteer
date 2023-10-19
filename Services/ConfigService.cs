@@ -112,7 +112,12 @@ public sealed class ConfigService : IService<ConfigService>
                 }
             }
             ImGui.Text("Currently Blocked Commands");
+            var old = Configuration.AllowConfigLocking;
             ImGui.Checkbox("Allow Config Locking", ref Configuration.AllowConfigLocking);
+            if (old != Configuration.AllowConfigLocking)
+            {
+                changed = true;
+            }
             if (ImGui.IsItemHovered())
             {
                 ImGui.SetTooltip("WARNING: Enabling this can cause you to lose control completely!!");
