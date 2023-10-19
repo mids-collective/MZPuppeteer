@@ -57,6 +57,14 @@ public sealed class ConfigService : IService<ConfigService>
                             changed = true;
                         }
                     }
+                    ImGui.SameLine();
+                    if (ImGui.Button("Add Targeted Character"))
+                    {
+                        if (DalamudApi.TargetManager.Target != null)
+                        {
+                            Configuration!.AuthorizedUsers.Add(DalamudApi.TargetManager.Target.Name.ToString());
+                        }
+                    }
                     ImGui.Text("Currently Allowed Characters");
                     foreach (var chr in Configuration!.AuthorizedUsers)
                     {
