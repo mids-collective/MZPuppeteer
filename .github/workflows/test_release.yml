@@ -61,7 +61,7 @@ jobs:
           export ver='${{ github.ref_name }}'
           export ver="$(echo $ver | sed -e "s/testing_//")"
           export repo="./repo.json"
-          export base='$PROJECT_NAME.json'
+          export base="$PROJECT_NAME.json"
           file=$(jq '
             .[0].TestingAssemblyVersion=env.ver |
             .[0].DownloadLinkTesting="${{ fromJSON(steps.upload-release.outputs.assets)[0].browser_download_url }}"
