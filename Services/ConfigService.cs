@@ -174,6 +174,7 @@ public sealed class ConfigService : IService<ConfigService>
                 ImGui.BeginTabBar("Main");
                 changed |= DrawBasicTab();
                 changed |= DrawCharacterTab();
+                changed |= DrawBlocklistTab();
                 changed |= DrawChatChannels();
                 ImGui.EndTabBar();
                 ImGui.EndChild();
