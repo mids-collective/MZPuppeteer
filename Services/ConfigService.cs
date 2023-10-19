@@ -26,6 +26,8 @@ public sealed class ConfigService : IService<ConfigService>
     public void SetConfigLock(bool configLocked) {
         if(Configuration.AllowConfigLocking) {
             Configuration.ConfigLocked = configLocked;
+            DalamudApi.PluginInterface.SavePluginConfig(Configuration);
+            CloseConfig();
         } else {
             Configuration.ConfigLocked = false;
         }
@@ -161,7 +163,7 @@ public sealed class ConfigService : IService<ConfigService>
 
     public void ToggleConfig()
     {
-        if (!(Configuration!.ConfigLocked && !Configuration.AllowConfigLocking))
+        if (!(Configuration!.ConfigLocked && Configuration.AllowConfigLocking))
         {
             ConfigOpen = !ConfigOpen;
         }
