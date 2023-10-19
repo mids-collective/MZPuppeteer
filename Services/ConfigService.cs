@@ -105,12 +105,12 @@ public sealed class ConfigService : IService<ConfigService>
                 ImGui.SameLine();
                 ImGui.Text($"{chr}");
                 ImGui.Text("Permissions");
-                ImGui.SameLine();
                 foreach (var en in Enum.GetNames<UserPermissions>())
                 {
                     if(en.Equals("None")) {
                         continue;
                     }
+                    ImGui.SameLine();
                     var Perm = Enum.Parse<UserPermissions>(en);
                     var HasPerm = chr.HasPermission(Perm);
                     var HPC = HasPerm;
