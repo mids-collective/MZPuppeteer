@@ -33,10 +33,12 @@ jobs:
       - name: Build
         run: |
           export ver='${{ github.ref_name }}'
+          ver=$(echo $ver | sed -e "s/testing_//")
           dotnet build -c Debug --nologo -p:Version=$ver -p:FileVersion=$ver -p:AssemblyVersion=$ver
       - name: Json Update
         run: |
           export ver='${{ github.ref_name }}'
+          ver=$(echo $ver | sed -e "s/testing_//")
           export path="./bin/Debug/$PROJECT_NAME.json"
           file=$(jq '.AssemblyVersion=env.ver' $path)
           echo $file|jq "." >$path
@@ -57,6 +59,7 @@ jobs:
       - name: Write out repo.json
         run: |
           export ver='${{ github.ref_name }}'
+          ver=$(echo $ver | sed -e "s/testing_//")
           export repo="./repo.json"
           export base='$PROJECT_NAME.json'
           file=$(jq '
