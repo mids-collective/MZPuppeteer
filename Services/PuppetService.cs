@@ -34,6 +34,7 @@ public sealed class PuppetService : IService<PuppetService>
                                     if (config.AllowConfigLocking)
                                     {
                                         srv.SetConfigLock(true);
+                                        srv.CloseConfig();
                                     }
                                     break;
                                 default:
