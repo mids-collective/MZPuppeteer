@@ -13,5 +13,6 @@ public class ConfigFile : IPluginConfiguration
     public HashSet<XivChatType> AllowedChats = new();
     public HashSet<string> CommandBlocklist = new() { "tell", "say", "shout", "yell" };
     public int Version { get; set; } = 1;
-    public bool ConfigAllowed = true;
+    public bool AllowConfigLocking = false;
+    public bool ConfigLocked = true;
 }

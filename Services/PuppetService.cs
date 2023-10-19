@@ -5,7 +5,9 @@ namespace Plugin.Services;
 public sealed class PuppetService : IService<PuppetService>
 {
     public static PuppetService Instance => Service<PuppetService>.Instance;
-    public ConfigFile config => Service<ConfigService>.Instance.Configuration!;
+    private ConfigService srv => Service<ConfigService>.Instance;
+    private ConfigFile config => srv.Configuration;
+
     private PuppetService()
     {
         DalamudApi.Chat.ChatMessage += Puppeter;
@@ -24,13 +26,13 @@ public sealed class PuppetService : IService<PuppetService>
                         switch (cmd.Split(" ")[1])
                         {
                             case "unlock":
-                                config.ConfigAllowed = true;
-                                ConfigService.Instance.Save();
+                                srv.SetConfigLock(false);
                                 break;
                             case "lock":
-                                config.ConfigAllowed = false;
-                                ConfigService.Instance.CloseConfig();
-                                DalamudApi.PluginInterface.SavePluginConfig(config);
+                                if (config.AllowConfigLocking)
+                                {
+                                    srv.SetConfigLock(true);
+                                }
                                 break;
                             default:
                                 break;

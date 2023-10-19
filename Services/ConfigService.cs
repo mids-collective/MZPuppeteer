@@ -2,7 +2,6 @@ using ImGuiNET;
 
 using Dalamud.Utility;
 using Dalamud.Game.Text;
-using FFXIVClientStructs.FFXIV.Client.UI;
 
 namespace Plugin.Services;
 
@@ -24,6 +23,11 @@ public sealed class ConfigService : IService<ConfigService>
     }
     private string CharacterToAdd = string.Empty;
     private string Command = string.Empty;
+    public void SetConfigLock(bool configLocked) {
+        if(Configuration.AllowConfigLocking) {
+            Configuration.ConfigLocked = configLocked;
+        }
+    }
     private void Draw()
     {
         if (ConfigOpen)
@@ -93,6 +97,11 @@ public sealed class ConfigService : IService<ConfigService>
                         }
                     }
                     ImGui.Text("Currently Blocked Commands");
+                    ImGui.Checkbox("Allow Config Locking", ref Configuration.AllowConfigLocking);
+                    if (ImGui.IsItemHovered())
+                    {
+                        ImGui.SetTooltip("WARNING: Enabling this can cause you to lose control completely!!");
+                    }
                     foreach (var cmd in Configuration!.CommandBlocklist)
                     {
                         if (ImGui.Button($"X##{cmd}"))
@@ -132,11 +141,12 @@ public sealed class ConfigService : IService<ConfigService>
                 ImGui.EndTabBar();
                 ImGui.EndChild();
                 ImGui.Separator();
-                if (ImGui.Button("Lock Config"))
+                if (Configuration.AllowConfigLocking)
                 {
-                    Configuration!.ConfigAllowed = false;
-                    ConfigOpen = false;
-                    changed = true;
+                    if (ImGui.Button("Lock Config"))
+                    {
+                        SetConfigLock(true);
+                    }
                 }
                 ImGui.End();
             }
@@ -149,7 +159,7 @@ public sealed class ConfigService : IService<ConfigService>
 
     public void ToggleConfig()
     {
-        if (Configuration!.ConfigAllowed)
+        if (!Configuration!.ConfigLocked)
         {
             ConfigOpen = !ConfigOpen;
         }
@@ -172,7 +182,7 @@ public sealed class ConfigService : IService<ConfigService>
     }
     public void OpenConfig()
     {
-        if (Configuration!.ConfigAllowed)
+        if (!Configuration!.ConfigLocked)
         {
             ConfigOpen = true;
         }
