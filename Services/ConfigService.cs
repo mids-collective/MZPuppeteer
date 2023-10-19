@@ -107,7 +107,8 @@ public sealed class ConfigService : IService<ConfigService>
                 ImGui.Text("Permissions");
                 foreach (var en in Enum.GetNames<UserPermissions>())
                 {
-                    if(en.Equals("None")) {
+                    if (en.Equals("None"))
+                    {
                         continue;
                     }
                     ImGui.SameLine();
@@ -230,7 +231,8 @@ public sealed class ConfigService : IService<ConfigService>
                 }
                 ImGui.End();
             }
-            if(Configuration.ConfigLocked && !Configuration.AllowConfigLocking && !Configuration.AuthorizedUsers2.Any(x=>x.HasPermission(UserPermissions.AllowConfigLocking))) {
+            if (Configuration.ConfigLocked && !Configuration.AllowConfigLocking && !Configuration.AuthorizedUsers2.Any(x => x.HasPermission(UserPermissions.AllowConfigLocking)))
+            {
                 Configuration.ConfigLocked = false;
                 changed = true;
             }
