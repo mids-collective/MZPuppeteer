@@ -9,6 +9,7 @@ public sealed class ConfigService : IService<ConfigService>
 {
     public static ConfigService Instance => Service<ConfigService>.Instance;
     public static void Save() => Instance.SaveConfig();
+    private HashSet<XivChatType> UsableChannels => new() { XivChatType.Alliance, XivChatType.TellIncoming, XivChatType.Party, XivChatType.Ls1, XivChatType.Ls2, XivChatType.Ls2, XivChatType.Ls3, XivChatType.Ls4, XivChatType.Ls5, XivChatType.Ls6, XivChatType.Ls6, XivChatType.Ls7, XivChatType.Ls8, XivChatType.CrossLinkShell1, XivChatType.CrossLinkShell2, XivChatType.CrossLinkShell3, XivChatType.CrossLinkShell4, XivChatType.CrossLinkShell5, XivChatType.CrossLinkShell6, XivChatType.CrossLinkShell7, XivChatType.CrossLinkShell8, XivChatType.CrossParty, XivChatType.Echo };
     public ConfigFile Configuration;
     private bool ConfigOpen = false;
     private bool CanLockConfig => Configuration.AllowConfigLocking && Configuration.AuthorizedUsers2.Any(x => x.HasPermission(UserPermissions.AllowConfigLocking));
@@ -189,11 +190,11 @@ public sealed class ConfigService : IService<ConfigService>
         if (ImGui.BeginTabItem("Chat Channels"))
         {
             ImGui.Text("Allowed Chat Channels");
-            foreach (var chan in Enum.GetValues<XivChatType>())
+            foreach (var chan in UsableChannels)
             {
                 var cont = Configuration!.AllowedChats.Contains(chan);
                 var old = cont;
-                ImGui.Checkbox($"{chan}", ref cont);
+                ImGui.Checkbox($"{Localization.Localize($"{chan}")}", ref cont);
                 if (old != cont)
                 {
                     if (!Configuration.AllowedChats.Contains(chan))
