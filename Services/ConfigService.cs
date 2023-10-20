@@ -2,6 +2,7 @@ using ImGuiNET;
 
 using Dalamud.Utility;
 using Dalamud.Game.Text;
+using ImComponents;
 
 namespace Plugin.Services;
 
@@ -124,15 +125,10 @@ public sealed class ConfigService : IService<ConfigService>
                     var Perm = Enum.Parse<UserPermissions>(en);
                     var HasPerm = chr.HasPermission(Perm);
                     var HPC = HasPerm;
-                    ImGui.Checkbox($"##{chr}{en}", ref HasPerm);
-                    if (HPC != HasPerm)
+                    if (ChangedCheck.Checkbox($"##{chr}{en}", $"{Localization.Localize(en)}", ref HasPerm))
                     {
                         chr.TogglePermission(Perm);
                         changed = true;
-                    }
-                    if (ImGui.IsItemHovered())
-                    {
-                        ImGui.SetTooltip($"{Localization.Localize(en)}");
                     }
                 }
                 ImGui.Separator();
@@ -159,15 +155,9 @@ public sealed class ConfigService : IService<ConfigService>
                 }
             }
             ImGui.Text("Currently Blocked Commands");
-            var old = Configuration.AllowConfigLocking;
-            ImGui.Checkbox("Allow Config Locking", ref Configuration.AllowConfigLocking);
-            if (old != Configuration.AllowConfigLocking)
+            if (ChangedCheck.Checkbox("Allow Config Locking", "WARNING: Enabling this can cause you to lose control completely!!", ref Configuration.AllowConfigLocking))
             {
                 changed = true;
-            }
-            if (ImGui.IsItemHovered())
-            {
-                ImGui.SetTooltip("WARNING: Enabling this can cause you to lose control completely!!");
             }
             foreach (var cmd in Configuration!.CommandBlocklist)
             {
@@ -193,9 +183,7 @@ public sealed class ConfigService : IService<ConfigService>
             foreach (var chan in UsableChannels)
             {
                 var cont = Configuration!.AllowedChats.Contains(chan);
-                var old = cont;
-                ImGui.Checkbox($"{Localization.Localize($"{chan}")}", ref cont);
-                if (old != cont)
+                if (ChangedCheck.Checkbox($"{Localization.Localize($"{chan}")}", ref cont))
                 {
                     if (!Configuration.AllowedChats.Contains(chan))
                     {
@@ -207,6 +195,10 @@ public sealed class ConfigService : IService<ConfigService>
                         Configuration.AllowedChats.Remove(chan);
                         changed = true;
                     }
+                }
+                if (ImGui.IsItemHovered())
+                {
+                    ImGui.SetTooltip($"{Localization.Localize($"{chan}_tooltip")}");
                 }
             }
             ImGui.EndTabItem();
