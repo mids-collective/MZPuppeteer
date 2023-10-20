@@ -2,6 +2,7 @@ using ImGuiNET;
 
 using Dalamud.Utility;
 using Dalamud.Game.Text;
+
 namespace Plugin.Services;
 
 public sealed class ConfigService : IService<ConfigService>
@@ -30,7 +31,7 @@ public sealed class ConfigService : IService<ConfigService>
         }
         DalamudApi.PluginInterface.UiBuilder.Draw += Draw;
         DalamudApi.PluginInterface.UiBuilder.OpenConfigUi += ToggleConfig;
-        CmdMgrService.Instance.AddCommand("/puppeteer", ToggleConfig, "Toggle Configuration Window");
+        CmdMgrService.Command("/puppeteer", ToggleConfig, "Toggle Configuration Window");
     }
     private void ToggleConfig(string cmd, string args)
     {

@@ -6,6 +6,7 @@ namespace Plugin.Services;
 public unsafe sealed class CmdService : IService<CmdService>
 {
     public static CmdService Instance => Service<CmdService>.Instance;
+    public static void Execute(string cmd) => Instance.ExecuteCommand(cmd);
     private const string ChatBoxSig = "48 89 5C 24 ?? 57 48 83 EC 20 48 8B FA 48 8B D9 45 84 C9";
     private CmdService()
     {
@@ -20,11 +21,8 @@ public unsafe sealed class CmdService : IService<CmdService>
             switch (command[0])
             {
                 case 'm':
-                    int.TryParse(command[1..], out int val);
-                    if (val is >= 0 and < 200)
-                    {
-                        MacroService.Instance.ExecuteMacroHook!.Original(UIService.Instance.raptureShellModule, (nint)UIService.Instance.raptureMacroModule + 0x58 + (Macro.size * val));
-                    }
+                    int.TryParse(command[1..], out int id);
+                    MacroService.Execute(id);
                     break;
             }
             return;

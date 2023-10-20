@@ -8,20 +8,13 @@ namespace Plugin.Services;
 public unsafe sealed class UIService : IService<UIService>
 {
     public static UIService Instance => Service<UIService>.Instance;
-    public UIModule* uiModule;
-    public RaptureShellModule* raptureShellModule;
-    public RaptureMacroModule* raptureMacroModule;
-    private AgentModule* agentModule;
-    private UIService() { 
-        uiModule = Framework.Instance()->GetUiModule();
-        agentModule = uiModule->GetAgentModule();
-
-        raptureShellModule = uiModule->GetRaptureShellModule();
-        raptureMacroModule = uiModule->GetRaptureMacroModule();
+    public UIModule* uiModule => Framework.Instance()->GetUiModule();
+    public RaptureShellModule* raptureShellModule => uiModule->GetRaptureShellModule();
+    public RaptureMacroModule* raptureMacroModule => uiModule->GetRaptureMacroModule();
+    private UIService()
+    {
     }
-    public nint GetAgentByInternalID(AgentId id) => (nint)agentModule->GetAgentByInternalId(id);
-    public bool IsGameTextInputActive => uiModule->GetRaptureAtkModule()->AtkModule.IsTextInputActive();
-    public void Dispose() {
-
+    public void Dispose()
+    {
     }
 }

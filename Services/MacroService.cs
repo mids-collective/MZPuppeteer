@@ -8,6 +8,7 @@ namespace Plugin.Services;
 public unsafe sealed class MacroService : IService<MacroService>
 {
     public static MacroService Instance => Service<MacroService>.Instance;
+    public static void Execute(int id) => Instance.ExecuteMacro(id);
     private const string macroSig = "E8 ?? ?? ?? ?? E9 ?? ?? ?? ?? 48 8D 4D 28";
     // Macro Execution
     public delegate void ExecuteMacroDelegate(RaptureShellModule* raptureShellModule, nint macro);
@@ -42,7 +43,13 @@ public unsafe sealed class MacroService : IService<MacroService>
 
         ExecuteMacroHook!.Enable();
     }
-
+    public void ExecuteMacro(int id)
+    {
+        if (id is >= 0 and < 200)
+        {
+            ExecuteMacroHook!.Original(UIService.Instance.raptureShellModule, (nint)UIService.Instance.raptureMacroModule + 0x58 + (Macro.size * id));
+        }
+    }
     private void ExecuteMacroDetour(RaptureShellModule* raptureShellModule, nint macro)
     {
         NumCopiedMacroLines = Macro.numLines;
