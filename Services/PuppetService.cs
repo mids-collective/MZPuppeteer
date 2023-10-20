@@ -5,8 +5,8 @@ namespace Plugin.Services;
 public sealed class PuppetService : IService<PuppetService>
 {
     public static PuppetService Instance => Service<PuppetService>.Instance;
-    private ConfigService srv => Service<ConfigService>.Instance;
-    private ConfigFile config => srv.Configuration;
+    private ConfigService ConfigSrv => Service<ConfigService>.Instance;
+    private ConfigFile config => ConfigSrv.Configuration;
 
     private PuppetService()
     {
@@ -30,11 +30,11 @@ public sealed class PuppetService : IService<PuppetService>
                             {
                                 case "unlock":
                                     if (user.HasPermission(UserPermissions.AllowConfigLocking))
-                                        srv.SetConfigLock(false);
+                                        ConfigSrv.SetConfigLock(false);
                                     break;
                                 case "lock":
                                     if (user.HasPermission(UserPermissions.AllowConfigLocking))
-                                        srv.SetConfigLock(true);
+                                        ConfigSrv.SetConfigLock(true);
                                     break;
                                 default:
                                     break;

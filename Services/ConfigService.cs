@@ -7,8 +7,11 @@ namespace Plugin.Services;
 public sealed class ConfigService : IService<ConfigService>
 {
     public static ConfigService Instance => Service<ConfigService>.Instance;
+    public static void Save() => Instance.SaveConfig();
     public ConfigFile Configuration;
     private bool ConfigOpen = false;
+    private bool CanLockConfig => Configuration.AllowConfigLocking && Configuration.AuthorizedUsers2.Any(x => x.HasPermission(UserPermissions.AllowConfigLocking));
+    private bool CanOpenConfig => !(Configuration!.ConfigLocked && Configuration.AllowConfigLocking) || !Configuration.AuthorizedUsers2.Any(x => x.HasPermission(UserPermissions.AllowConfigLocking));
     private void ConvertTo2()
     {
         foreach (var user in Configuration.AuthorizedUsers)
@@ -37,7 +40,7 @@ public sealed class ConfigService : IService<ConfigService>
     private string Command = string.Empty;
     public void SetConfigLock(bool configLocked)
     {
-        if (Configuration.AllowConfigLocking)
+        if (CanLockConfig)
         {
             Configuration.ConfigLocked = configLocked;
             CloseConfig();
@@ -46,9 +49,8 @@ public sealed class ConfigService : IService<ConfigService>
         {
             Configuration.ConfigLocked = false;
         }
-        DalamudApi.PluginInterface.SavePluginConfig(Configuration);
+        SaveConfig();
     }
-
     private bool DrawBasicTab()
     {
         var changed = false;
@@ -227,7 +229,7 @@ public sealed class ConfigService : IService<ConfigService>
                 ImGui.EndTabBar();
                 ImGui.EndChild();
                 ImGui.Separator();
-                if (Configuration.AllowConfigLocking)
+                if (CanLockConfig)
                 {
                     if (ImGui.Button("Lock Config"))
                     {
@@ -243,14 +245,14 @@ public sealed class ConfigService : IService<ConfigService>
             }
             if (changed)
             {
-                DalamudApi.PluginInterface.SavePluginConfig(Configuration);
+                SaveConfig();
             }
         }
     }
 
     public void ToggleConfig()
     {
-        if (!(Configuration!.ConfigLocked && Configuration.AllowConfigLocking) || !Configuration.AuthorizedUsers2.Any(x => x.HasPermission(UserPermissions.AllowConfigLocking)))
+        if (CanOpenConfig)
         {
             ConfigOpen = !ConfigOpen;
         }
@@ -273,17 +275,18 @@ public sealed class ConfigService : IService<ConfigService>
     }
     public void OpenConfig()
     {
-        if (!Configuration!.ConfigLocked)
+        if (CanOpenConfig)
         {
             ConfigOpen = true;
         }
     }
-    public void Save()
+    public void SaveConfig()
     {
         DalamudApi.PluginInterface.SavePluginConfig(Configuration);
     }
     public void Dispose()
     {
+        SaveConfig();
         DalamudApi.PluginInterface.UiBuilder.Draw -= Draw;
         DalamudApi.PluginInterface.UiBuilder.OpenConfigUi -= ToggleConfig;
     }
