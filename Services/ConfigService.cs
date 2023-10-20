@@ -125,7 +125,7 @@ public sealed class ConfigService : IService<ConfigService>
                     var Perm = Enum.Parse<UserPermissions>(en);
                     var HasPerm = chr.HasPermission(Perm);
                     var HPC = HasPerm;
-                    if (ChangedCheck.Checkbox($"##{chr}{en}", $"{Localization.Localize(en)}", ref HasPerm))
+                    if (ChangedCheck.Checkbox($"##{chr}{en}", $"{DalamudApi.PluginInterface.UiLanguage}_{Localization.Localize(en)}_tooltip", ref HasPerm))
                     {
                         chr.TogglePermission(Perm);
                         changed = true;

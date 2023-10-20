@@ -1,3 +1,4 @@
 {
-    "AllowConfigLocking":"Enables the user to lock you from opening the config"
+    "AllowConfigLocking_tooltip": "Enables the user to lock you from opening the config",
+    "en_AllowConfigLocking_tooltip": "Enables the user to lock you from opening the config"
 }

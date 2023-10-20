@@ -8,10 +8,18 @@ public sealed class Localization : IService<Localization>
     public static Localization Instance => Service<Localization>.Instance;
     public static string Localize(string glob) => Instance.LocalizeString(glob);
     private Dictionary<string, string> Locale = new();
-    public string LocalizeString(string Glob) {
-        if(Locale.ContainsKey(Glob)){
+    public string LocalizeString(string Glob)
+    {
+        if (Locale.ContainsKey($"{DalamudApi.PluginInterface.UiLanguage}_{Glob}"))
+        {
+            return Locale[$"{DalamudApi.PluginInterface.UiLanguage}_{Glob}"];
+        }
+        else if (Locale.ContainsKey(Glob))
+        {
             return Locale[Glob];
-        } else {
+        }
+        else
+        {
             return Glob;
         }
     }
