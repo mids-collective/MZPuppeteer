@@ -18,7 +18,7 @@ public sealed class Localization : IService<Localization>
     private Localization()
     {
         var thisAssembly = Assembly.GetExecutingAssembly();
-        using (var stream = thisAssembly.GetManifestResourceStream("MZPuppeteer.locale.json"))
+        using (var stream = thisAssembly.GetManifestResourceStream($"{thisAssembly.GetName().Name}.locale.json"))
         {
             if (stream != null)
                 using (var reader = new StreamReader(stream))
