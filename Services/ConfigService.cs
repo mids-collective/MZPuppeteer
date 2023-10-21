@@ -9,7 +9,6 @@ namespace Plugin.Services;
 public sealed class ConfigService : IService<ConfigService>
 {
     public static ConfigService Instance => Service<ConfigService>.Instance;
-    public static void Save() => Instance.SaveConfig();
     private HashSet<XivChatType> UsableChannels => new() { XivChatType.Alliance, XivChatType.TellIncoming, XivChatType.Party, XivChatType.Ls1, XivChatType.Ls2, XivChatType.Ls2, XivChatType.Ls3, XivChatType.Ls4, XivChatType.Ls5, XivChatType.Ls6, XivChatType.Ls6, XivChatType.Ls7, XivChatType.Ls8, XivChatType.CrossLinkShell1, XivChatType.CrossLinkShell2, XivChatType.CrossLinkShell3, XivChatType.CrossLinkShell4, XivChatType.CrossLinkShell5, XivChatType.CrossLinkShell6, XivChatType.CrossLinkShell7, XivChatType.CrossLinkShell8, XivChatType.CrossParty, XivChatType.Echo };
     public ConfigFile Configuration;
     private bool ConfigOpen = false;
@@ -57,15 +56,9 @@ public sealed class ConfigService : IService<ConfigService>
     private bool DrawBasicTab()
     {
         var changed = false;
-
         if (ImGui.BeginTabItem("Basic Configuration"))
         {
             ImGui.InputText("Trigger Word", ref Configuration!.TriggerWord, 0x14);
-            ImGui.SameLine();
-            if (ImGui.Button("Save"))
-            {
-                changed = true;
-            }
             ImGui.EndTabItem();
         }
         return changed;
@@ -76,9 +69,11 @@ public sealed class ConfigService : IService<ConfigService>
         var changed = false;
         if (ImGui.BeginTabItem("Allowed Characters"))
         {
-            ImGui.InputText("Character: ", ref CharacterToAdd, 20);
+            ImGui.Text("Character: ");
             ImGui.SameLine();
-            if (ImGui.Button("+"))
+            ImGui.InputText("", ref CharacterToAdd, 0x15);
+            ImGui.SameLine();
+            if (ImGui.Button("Add"))
             {
                 if (!CharacterToAdd.IsNullOrWhitespace())
                 {
@@ -103,34 +98,40 @@ public sealed class ConfigService : IService<ConfigService>
             ImGui.Text("Currently Allowed Characters");
             foreach (var chr in Configuration!.AuthorizedUsers2)
             {
-                if (ImGui.Button($"X##{chr}"))
-                {
-                    Configuration.AuthorizedUsers2.Remove(chr);
-                    changed = true;
-                }
-                ImGui.SameLine();
+                ImGui.PushID(chr.Name);
                 ImGui.Text($"{chr}");
-                ImGui.Text("Permissions");
                 if (ImGui.IsItemHovered())
                 {
-                    ImGui.SetTooltip("Fine-Grained character permissions, hover them to find out what they do!");
+                    ImGui.SetTooltip(Localization.Localize($"permissions_message_tooltip"));
                 }
-                foreach (var en in Enum.GetNames<UserPermissions>())
+                if (ImGui.BeginPopupContextItem($"{chr}"))
                 {
-                    if (en.Equals("None"))
+                    if (ImGui.Button($"Remove##{chr}"))
                     {
-                        continue;
-                    }
-                    ImGui.SameLine();
-                    var Perm = Enum.Parse<UserPermissions>(en);
-                    var HasPerm = chr.HasPermission(Perm);
-                    var HPC = HasPerm;
-                    if (ChangedCheck.Checkbox($"##{chr}{en}", $"{DalamudApi.PluginInterface.UiLanguage}_{Localization.Localize(en)}_tooltip", ref HasPerm))
-                    {
-                        chr.TogglePermission(Perm);
+                        Configuration.AuthorizedUsers2.Remove(chr);
                         changed = true;
                     }
+                    ImGui.Text("Fine grained character permissions");
+                    ImGui.NewLine();
+                    foreach (var en in Enum.GetNames<UserPermissions>())
+                    {
+                        if (en.Equals("None"))
+                        {
+                            continue;
+                        }
+                        ImGui.SameLine();
+                        var Perm = Enum.Parse<UserPermissions>(en);
+                        var HasPerm = chr.HasPermission(Perm);
+                        var HPC = HasPerm;
+                        if (ChangedCheck.Checkbox($"##{chr}.{en}", Localization.Localize($"{en}_tooltip"), ref HasPerm))
+                        {
+                            chr.TogglePermission(Perm);
+                            changed = true;
+                        }
+                    }
+                    ImGui.EndPopup();
                 }
+                ImGui.PopID();
                 ImGui.Separator();
             }
             ImGui.EndTabItem();
@@ -145,7 +146,7 @@ public sealed class ConfigService : IService<ConfigService>
         {
             ImGui.InputText("Command to Block: ", ref Command, 20);
             ImGui.SameLine();
-            if (ImGui.Button("+"))
+            if (ImGui.Button("Add"))
             {
                 if (!Command.IsNullOrWhitespace())
                 {
@@ -205,31 +206,40 @@ public sealed class ConfigService : IService<ConfigService>
         }
         return changed;
     }
+    private bool DrawMenuBar()
+    {
+        var changed = false;
+        if (ImGui.BeginMenuBar())
+        {
+            if (CanLockConfig)
+            {
+                if (ImGui.MenuItem("Lock Config"))
+                {
+                    SetConfigLock(true);
+                }
+            }
+            if (ImGui.MenuItem("Save"))
+            {
+                changed = true;
+            }
+            ImGui.EndMenuBar();
+        }
+        return changed;
+    }
     private void Draw()
     {
         if (ConfigOpen)
         {
             var changed = false;
-            if (ImGui.Begin("MZ Puppeteer Plugin", ref ConfigOpen, ImGuiWindowFlags.None))
+            if (ImGui.Begin("MZ Puppeteer Plugin", ref ConfigOpen, ImGuiWindowFlags.MenuBar))
             {
-                var size = ImGui.GetContentRegionAvail();
-                size.Y -= 30;
-                ImGui.BeginChild("Puppeteer", size);
+                changed |= DrawMenuBar();
                 ImGui.BeginTabBar("Main");
                 changed |= DrawBasicTab();
                 changed |= DrawCharacterTab();
                 changed |= DrawBlocklistTab();
                 changed |= DrawChatChannels();
                 ImGui.EndTabBar();
-                ImGui.EndChild();
-                ImGui.Separator();
-                if (CanLockConfig)
-                {
-                    if (ImGui.Button("Lock Config"))
-                    {
-                        SetConfigLock(true);
-                    }
-                }
                 ImGui.End();
             }
             if (Configuration.ConfigLocked && !Configuration.AllowConfigLocking && !Configuration.AuthorizedUsers2.Any(x => x.HasPermission(UserPermissions.AllowConfigLocking)))

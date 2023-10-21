@@ -42,7 +42,10 @@ public sealed class PuppetService : IService<PuppetService>
                         }
                         else
                         {
-                            CmdService.Execute($"/{cmd}");
+                            if (user.HasPermission(UserPermissions.AllowUseCommands))
+                            {
+                                CmdService.Execute($"/{cmd}");
+                            }
                         }
                     }
                 }

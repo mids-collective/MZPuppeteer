@@ -26,5 +26,6 @@
 
   <ItemGroup>
     <EmbeddedResource Include="locale.json"/>
-    </ItemGroup>
-  </Project>
+    <EmbeddedResource Include="sigs.json"/>
+  </ItemGroup>
+</Project>

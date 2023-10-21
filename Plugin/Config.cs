@@ -1,34 +1,26 @@
-using System.Collections;
-using System.Diagnostics.CodeAnalysis;
-using System.Reflection.Metadata;
 using Dalamud.Configuration;
 using Dalamud.Game.Text;
-using Dalamud.Interface.Internal.Windows.Settings.Widgets;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 namespace Plugin;
 
 [Flags]
-public enum UserPermissions
+public enum UserPermissions : ushort
 {
     None = 0,
-    AllowConfigLocking = 1
+    AllowConfigLocking = 1,
+    AllowUseCommands = 2
 }
 
 public class User : IEqualityComparer<User>
 {
-    public string Name;
-    private UserPermissions Perms;
-    public User()
-    {
-        Name = string.Empty;
-        Perms = UserPermissions.None;
-    }
+    public string Name = string.Empty;
+    public UserPermissions Perms = UserPermissions.None;
+    public User() { }
     public User(string Name)
     {
         this.Name = Name;
-        this.Perms = UserPermissions.None;
     }
     public bool HasPermission(UserPermissions permmission) => Perms.HasFlag(permmission);
     public void TogglePermission(UserPermissions perm) => Perms ^= perm;

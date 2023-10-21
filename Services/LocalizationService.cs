@@ -14,10 +14,6 @@ public sealed class Localization : IService<Localization>
         {
             return Locale[$"{DalamudApi.PluginInterface.UiLanguage}_{Glob}"];
         }
-        else if (Locale.ContainsKey(Glob))
-        {
-            return Locale[Glob];
-        }
         else
         {
             return Glob;

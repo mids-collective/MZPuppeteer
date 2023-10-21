@@ -9,7 +9,6 @@ public unsafe sealed class MacroService : IService<MacroService>
 {
     public static MacroService Instance => Service<MacroService>.Instance;
     public static void Execute(int id) => Instance.ExecuteMacro(id);
-    private const string macroSig = "E8 ?? ?? ?? ?? E9 ?? ?? ?? ?? 48 8D 4D 28";
     // Macro Execution
     public delegate void ExecuteMacroDelegate(RaptureShellModule* raptureShellModule, nint macro);
     public Hook<ExecuteMacroDelegate>? ExecuteMacroHook;
@@ -36,10 +35,9 @@ public unsafe sealed class MacroService : IService<MacroService>
     }
     private MacroService()
     {
-        DalamudApi.GameInteropProvider.InitializeFromAttributes(this);
-        ExecuteMacroHook = DalamudApi.GameInteropProvider.HookFromSignature<ExecuteMacroDelegate>(macroSig, ExecuteMacroDetour);
-        numCopiedMacroLinesPtr = DalamudApi.SigScanner.ScanText("49 8D 5E 70 BF ?? 00 00 00") + 0x5;
-        numExecutedMacroLinesPtr = DalamudApi.SigScanner.ScanText("41 83 F8 ?? 0F 8D ?? ?? ?? ?? 49 6B C8 68") + 0x3;
+        ExecuteMacroHook = DalamudApi.GameInteropProvider.HookFromSignature<ExecuteMacroDelegate>(SigService.GetSig("Macro"), ExecuteMacroDetour);
+        numCopiedMacroLinesPtr = DalamudApi.SigScanner.ScanText(SigService.GetSig("CopiedMacroLines")) + 0x5;
+        numExecutedMacroLinesPtr = DalamudApi.SigScanner.ScanText(SigService.GetSig("ExecutedMacroLines")) + 0x3;
 
         ExecuteMacroHook!.Enable();
     }

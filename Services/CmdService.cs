@@ -7,12 +7,10 @@ public unsafe sealed class CmdService : IService<CmdService>
 {
     public static CmdService Instance => Service<CmdService>.Instance;
     public static void Execute(string cmd) => Instance.ExecuteCommand(cmd);
-    private const string ChatBoxSig = "48 89 5C 24 ?? 57 48 83 EC 20 48 8B FA 48 8B D9 45 84 C9";
     private CmdService()
     {
-        ProcessChatBox = Marshal.GetDelegateForFunctionPointer<ProcessChatBoxDelegate>(DalamudApi.SigScanner.ScanModule(ChatBoxSig));
+        ProcessChatBox = Marshal.GetDelegateForFunctionPointer<ProcessChatBoxDelegate>(DalamudApi.SigScanner.ScanModule(SigService.GetSig("ProcessChatBox")));
     }
-
     public void ExecuteCommand(string command)
     {
         if (command.StartsWith("//"))

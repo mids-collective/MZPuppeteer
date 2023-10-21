@@ -1,4 +1,5 @@
 {
-    "AllowConfigLocking_tooltip": "Enables the user to lock you from opening the config",
-    "en_AllowConfigLocking_tooltip": "Enables the user to lock you from opening the config"
+    "en_AllowConfigLocking_tooltip": "Enables the user to lock you from opening the config.",
+    "en_AllowUseCommands_tooltip": "Allows a user to use chat commands, such as emotes.",
+    "en_permissions_message_tooltip": "Right click to show fine-grained user permissions."
 }
