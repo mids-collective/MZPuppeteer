@@ -101,8 +101,8 @@ public sealed class ConfigService : IService<ConfigService>
                         Configuration.AuthorizedUsers2.Remove(chr);
                         changed = true;
                     }
-                    ImGui.Text("Fine grained character permissions");
-                    ImGui.NewLine();
+                    ImGui.Text("Permissions");
+                    ImGui.SameLine();
                     foreach (var en in Enum.GetNames<UserPermissions>())
                     {
                         if (en.Equals("None"))
@@ -119,7 +119,8 @@ public sealed class ConfigService : IService<ConfigService>
                             changed = true;
                         }
                     }
-                    ImGui.Text("Individual Trigger Word: ");
+                    ImGui.Text("Trigger Word: ");
+                    ImGui.SameLine();
                     ImGui.InputText("", ref chr.Triggerword, 0x20);
                     ImGui.EndPopup();
                 }
