@@ -96,11 +96,9 @@ public sealed class ConfigService : IService<ConfigService>
                 }
                 if (ImGui.BeginPopupContextItem($"{chr}"))
                 {
-                    if (ImGui.Button($"Remove##{chr}"))
-                    {
-                        Configuration.AuthorizedUsers2.Remove(chr);
-                        changed = true;
-                    }
+                    ImGui.Text("Trigger Word: ");
+                    ImGui.SameLine();
+                    ImGui.InputText("", ref chr.Triggerword, 0x20);
                     ImGui.Text("Permissions");
                     ImGui.SameLine();
                     foreach (var en in Enum.GetNames<UserPermissions>())
@@ -119,9 +117,11 @@ public sealed class ConfigService : IService<ConfigService>
                             changed = true;
                         }
                     }
-                    ImGui.Text("Trigger Word: ");
-                    ImGui.SameLine();
-                    ImGui.InputText("", ref chr.Triggerword, 0x20);
+                    if (ImGui.Button($"Remove##{chr}"))
+                    {
+                        Configuration.AuthorizedUsers2.Remove(chr);
+                        changed = true;
+                    }
                     ImGui.EndPopup();
                 }
                 ImGui.PopID();
