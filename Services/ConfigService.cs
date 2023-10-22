@@ -155,7 +155,7 @@ public sealed class ConfigService : IService<ConfigService>
             }
             foreach (var cmd in Configuration!.CommandBlocklist)
             {
-                ImGui.Text($"{cmd}");
+                ImGui.BulletText($"{cmd}");
                 if(ImGui.BeginPopupContextItem($"{cmd}")) {
                     if(ImGui.Button($"Remove##{cmd}")) {
                         Configuration!.CommandBlocklist.Remove(cmd);
