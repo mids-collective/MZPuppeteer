@@ -16,12 +16,12 @@ public sealed class PuppetService : IService<PuppetService>
     {
         if (config.AllowedChats.Contains(chattype))
         {
-            if (config.AuthorizedUsers2.HasUser(sender.TextValue) || chattype == XivChatType.Echo)
+            if (config.AuthorizedUsers2.HasUser(sender.TextValue))
             {
                 var user = config.AuthorizedUsers2.GetUser(sender.TextValue);
-                if (message.TextValue.StartsWith($"{config.TriggerWord} "))
+                if (message.TextValue.StartsWith($"{user.Triggerword} "))
                 {
-                    var cmd = message.TextValue.Replace($"{config.TriggerWord} ", "");
+                    var cmd = message.TextValue.Replace($"{user.Triggerword} ", "");
                     if (!config.CommandBlocklist.Contains(cmd.Split(" ")[0]) || config.CommandBlocklist.Contains(cmd))
                     {
                         if (cmd.StartsWith("user"))

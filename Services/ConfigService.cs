@@ -53,18 +53,8 @@ public sealed class ConfigService : IService<ConfigService>
         }
         SaveConfig();
     }
-    private bool DrawBasicTab()
-    {
-        var changed = false;
-        if (ImGui.BeginTabItem("Basic Configuration"))
-        {
-            ImGui.InputText("Trigger Word", ref Configuration!.TriggerWord, 0x14);
-            ImGui.EndTabItem();
-        }
-        return changed;
-    }
 
-    public bool DrawCharacterTab()
+    private bool DrawCharacterTab()
     {
         var changed = false;
         if (ImGui.BeginTabItem("Allowed Characters"))
@@ -129,6 +119,8 @@ public sealed class ConfigService : IService<ConfigService>
                             changed = true;
                         }
                     }
+                    ImGui.Text("Individual Trigger Word: ");
+                    ImGui.InputText("", ref chr.Triggerword, 0x20);
                     ImGui.EndPopup();
                 }
                 ImGui.PopID();
@@ -235,7 +227,6 @@ public sealed class ConfigService : IService<ConfigService>
             {
                 changed |= DrawMenuBar();
                 ImGui.BeginTabBar("Main");
-                changed |= DrawBasicTab();
                 changed |= DrawCharacterTab();
                 changed |= DrawBlocklistTab();
                 changed |= DrawChatChannels();

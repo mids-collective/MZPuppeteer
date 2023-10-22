@@ -17,6 +17,7 @@ public class User : IEqualityComparer<User>
 {
     public string Name = string.Empty;
     public UserPermissions Perms = UserPermissions.None;
+    public string Triggerword = string.Empty;
     public User() { }
     public User(string Name)
     {
@@ -43,7 +44,6 @@ public class ConfigFile : IPluginConfiguration
 {
     public HashSet<string> AuthorizedUsers = new();
     public HashSet<User> AuthorizedUsers2 = new();
-    public string TriggerWord = "Trigger";
     [JsonProperty(ItemConverterType = typeof(StringEnumConverter))]
     public HashSet<XivChatType> AllowedChats = new();
     public HashSet<string> CommandBlocklist = new() { "tell", "say", "shout", "yell" };
