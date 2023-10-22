@@ -9,7 +9,7 @@ namespace Plugin.Services;
 public sealed class ConfigService : IService<ConfigService>
 {
     public static ConfigService Instance => Service<ConfigService>.Instance;
-    private HashSet<XivChatType> UsableChannels => new() { XivChatType.Alliance, XivChatType.TellIncoming, XivChatType.Party, XivChatType.Ls1, XivChatType.Ls2, XivChatType.Ls2, XivChatType.Ls3, XivChatType.Ls4, XivChatType.Ls5, XivChatType.Ls6, XivChatType.Ls6, XivChatType.Ls7, XivChatType.Ls8, XivChatType.CrossLinkShell1, XivChatType.CrossLinkShell2, XivChatType.CrossLinkShell3, XivChatType.CrossLinkShell4, XivChatType.CrossLinkShell5, XivChatType.CrossLinkShell6, XivChatType.CrossLinkShell7, XivChatType.CrossLinkShell8, XivChatType.CrossParty, XivChatType.Echo };
+    private HashSet<XivChatType> UsableChannels => new() { XivChatType.Alliance, XivChatType.TellIncoming, XivChatType.Party, XivChatType.Ls1, XivChatType.Ls2, XivChatType.Ls2, XivChatType.Ls3, XivChatType.Ls4, XivChatType.Ls5, XivChatType.Ls6, XivChatType.Ls6, XivChatType.Ls7, XivChatType.Ls8, XivChatType.CrossLinkShell1, XivChatType.CrossLinkShell2, XivChatType.CrossLinkShell3, XivChatType.CrossLinkShell4, XivChatType.CrossLinkShell5, XivChatType.CrossLinkShell6, XivChatType.CrossLinkShell7, XivChatType.CrossLinkShell8, XivChatType.CrossParty };
     public ConfigFile Configuration;
     private bool ConfigOpen = false;
     private bool CanLockConfig => Configuration.AllowConfigLocking && Configuration.AuthorizedUsers2.Any(x => x.HasPermission(UserPermissions.AllowConfigLocking));
@@ -154,20 +154,21 @@ public sealed class ConfigService : IService<ConfigService>
             }
             foreach (var cmd in Configuration!.CommandBlocklist)
             {
-                if (ImGui.Button($"X##{cmd}"))
-                {
-                    Configuration.CommandBlocklist.Remove(cmd);
-                    changed = true;
-                }
-                ImGui.SameLine();
                 ImGui.Text($"{cmd}");
+                if(ImGui.BeginPopupContextItem()) {
+                    if(ImGui.Button($"Remove##{cmd}")) {
+                        Configuration!.CommandBlocklist.Remove(cmd);
+                        changed = true;
+                    }
+                    ImGui.EndPopup();
+                }
             }
             ImGui.EndTabItem();
         }
         return changed;
     }
 
-    public bool DrawChatChannels()
+    private bool DrawChatChannels()
     {
         bool changed = false;
         if (ImGui.BeginTabItem("Chat Channels"))
@@ -264,18 +265,18 @@ public sealed class ConfigService : IService<ConfigService>
         }
     }
 
-    public void CloseConfig()
+    private void CloseConfig()
     {
         ConfigOpen = false;
     }
-    public void OpenConfig()
+    private void OpenConfig()
     {
         if (CanOpenConfig)
         {
             ConfigOpen = true;
         }
     }
-    public void SaveConfig()
+    private void SaveConfig()
     {
         DalamudApi.PluginInterface.SavePluginConfig(Configuration);
     }
