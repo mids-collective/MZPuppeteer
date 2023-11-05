@@ -45,7 +45,7 @@ public unsafe sealed class MacroService : IService<MacroService>
     {
         if (id is >= 0 and < 200)
         {
-            ExecuteMacroHook!.Original(UIService.Instance.raptureShellModule, (nint)UIService.Instance.raptureMacroModule + 0x58 + (Macro.size * id));
+            ExecuteMacroHook!.Original(UIService.raptureShellModule, (nint)UIService.raptureMacroModule + 0x58 + (Macro.size * id));
         }
     }
     private void ExecuteMacroDetour(RaptureShellModule* raptureShellModule, nint macro)

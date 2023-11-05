@@ -31,7 +31,7 @@ public unsafe sealed class CmdService : IService<CmdService>
             stringPtr = Marshal.AllocHGlobal(UTF8String.size);
             using var str = new UTF8String(stringPtr, command);
             Marshal.StructureToPtr(str, stringPtr, false);
-            ProcessChatBox!(UIService.Instance.uiModule, stringPtr, nint.Zero, 0);
+            ProcessChatBox!(UIService.uiModule, stringPtr, nint.Zero, 0);
         }
         catch
         {

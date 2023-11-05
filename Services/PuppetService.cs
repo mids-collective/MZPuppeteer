@@ -5,24 +5,23 @@ namespace Plugin.Services;
 public sealed class PuppetService : IService<PuppetService>
 {
     public static PuppetService Instance => Service<PuppetService>.Instance;
-    private ConfigService ConfigSrv => Service<ConfigService>.Instance;
-    private ConfigFile config => ConfigSrv.Configuration;
-
+    private static ConfigService ConfigSrv => ConfigService.Instance;
+    private static ConfigFile Config => ConfigSrv.Configuration;
     private PuppetService()
     {
         DalamudApi.Chat.ChatMessage += Puppeter;
     }
-    private void Puppeter(XivChatType chattype, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled)
+    public void Puppeter(XivChatType chattype, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled)
     {
-        if (config.AllowedChats.Contains(chattype))
+        if (Config.AllowedChats.Contains(chattype))
         {
-            if (config.AuthorizedUsers2.HasUser(sender.TextValue))
+            if (Config.AuthorizedUsers2.HasUser(sender.TextValue))
             {
-                var user = config.AuthorizedUsers2.GetUser(sender.TextValue);
+                var user = Config.AuthorizedUsers2.GetUser(sender.TextValue);
                 if (message.TextValue.StartsWith($"{user.Triggerword} "))
                 {
                     var cmd = message.TextValue.Replace($"{user.Triggerword} ", "");
-                    if (!config.CommandBlocklist.Contains(cmd.Split(" ")[0]) || config.CommandBlocklist.Contains(cmd))
+                    if (!Config.CommandBlocklist.Contains(cmd.Split(" ")[0]) || Config.CommandBlocklist.Contains(cmd))
                     {
                         if (cmd.StartsWith("user"))
                         {

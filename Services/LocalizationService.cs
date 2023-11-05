@@ -7,12 +7,12 @@ public sealed class Localization : IService<Localization>
 {
     public static Localization Instance => Service<Localization>.Instance;
     public static string Localize(string glob) => Instance.LocalizeString(glob);
-    private Dictionary<string, string> Locale = new();
+    private Dictionary<string, string> locale = new();
     public string LocalizeString(string Glob)
     {
-        if (Locale.ContainsKey($"{DalamudApi.PluginInterface.UiLanguage}_{Glob}"))
+        if (locale.ContainsKey($"{DalamudApi.PluginInterface.UiLanguage}_{Glob}"))
         {
-            return Locale[$"{DalamudApi.PluginInterface.UiLanguage}_{Glob}"];
+            return locale[$"{DalamudApi.PluginInterface.UiLanguage}_{Glob}"];
         }
         else
         {
@@ -28,7 +28,7 @@ public sealed class Localization : IService<Localization>
                 using (var reader = new StreamReader(stream))
                 {
                     if (reader != null)
-                        Locale = JsonConvert.DeserializeObject<Dictionary<string, string>>(reader.ReadToEnd()) ?? new();
+                        locale = JsonConvert.DeserializeObject<Dictionary<string, string>>(reader.ReadToEnd()) ?? new();
                 }
         }
     }
